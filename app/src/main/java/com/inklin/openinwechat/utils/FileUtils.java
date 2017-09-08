@@ -36,7 +36,7 @@ public class FileUtils {
             File fileFolder = new File(path);
             if (fileFolder.exists())
                 for(File f:fileFolder.listFiles()){
-                    f.delete();
+                    deleteFile(context, f);//f.delete();
                 }
             if (!fileFolder.exists())
                 fileFolder.mkdirs();
@@ -51,7 +51,7 @@ public class FileUtils {
 
             ContentValues values = new ContentValues();
             values.put(MediaStore.Images.ImageColumns.DATA, file.getAbsolutePath());
-            values.put(MediaStore.Images.ImageColumns.TITLE, file.getName());
+            values.put(MediaStore.Images.ImageColumns.TITLE, "QRCODE");
             values.put(MediaStore.Images.ImageColumns.DISPLAY_NAME, file.getName());
             values.put(MediaStore.Images.ImageColumns.MIME_TYPE, "image/png");
             values.put(MediaStore.Images.ImageColumns.SIZE, file.length());
@@ -84,6 +84,11 @@ public class FileUtils {
             e.printStackTrace();
         }
         return string;
+    }
+
+    public static void deleteFile(Context context, File file){
+        file.delete();
+        context.getContentResolver().delete(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "TITLE = 'QRCODE'", null);
     }
 
     public static File getDiskCacheDir(Context context, String uniqueName) {

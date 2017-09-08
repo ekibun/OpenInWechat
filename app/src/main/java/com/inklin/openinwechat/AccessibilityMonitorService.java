@@ -40,13 +40,15 @@ import java.util.List;
 public class AccessibilityMonitorService extends AccessibilityService {
 
     File file;
+    long oldTime = 0;
     int process = 0;
     public int onStartCommand(Intent intent, int flags, int startId){
         if(intent != null && intent.hasExtra("processWechat")){
             try {
                 String url = intent.getStringExtra("processWechat");
                 Bitmap qrcode = FileUtils.createQRCode(url, 500);
-                file = FileUtils.saveBitmapToCache(this, qrcode, url);
+                oldTime = System.currentTimeMillis();
+                file = FileUtils.saveBitmapToCache(this, qrcode, String.valueOf(oldTime));
                 //FileUtils.requestScanFile(this, file.getPath());
                 process = openWechatScanUI(this)? 1 : 0;
             } catch (Exception e) {
@@ -78,8 +80,14 @@ public class AccessibilityMonitorService extends AccessibilityService {
     public void onAccessibilityEvent(AccessibilityEvent event) {
         if(process <= 0)
             return;
+
+        if(System.currentTimeMillis() - oldTime > 20000){
+            process = 0;
+            return;
+        }
+
         String className = event.getClassName().toString();
-        Log.e("className", className);
+        Log.v("className", className);
         //AccessibilityNodeInfo rootNode = getRootInActiveWindow();
         AccessibilityNodeInfo mAccessibilityNodeInfo = event.getSource();
 
@@ -96,6 +104,7 @@ public class AccessibilityMonitorService extends AccessibilityService {
                     AccessibilityNodeInfo accessibilityNodeInfo = infos.get(infos.size() - 1);
                     accessibilityNodeInfo.performAction(AccessibilityNodeInfo.ACTION_CLICK);
                     process++;
+                    oldTime = System.currentTimeMillis();
                 }
                 break;
             case 2:
@@ -105,28 +114,32 @@ public class AccessibilityMonitorService extends AccessibilityService {
                     accessibilityNodeInfo.getParent().performAction(AccessibilityNodeInfo.ACTION_CLICK);
                     sleepTime = 200;
                     process++;
+                    oldTime = System.currentTimeMillis();
                 }
                 break;
             case 3:
-                infos = mAccessibilityNodeInfo.findAccessibilityNodeInfosByViewId("com.tencent.mm:id/eq");
-                if (infos != null && infos.size() > 0) {
-                    AccessibilityNodeInfo accessibilityNodeInfo = infos.get(0);
+                if (!"com.tencent.mm.plugin.gallery.ui.AlbumPreviewUI".equals(className))
+                    break;
+                AccessibilityNodeInfo info = findNodeByClass("android.widget.GridView", mAccessibilityNodeInfo);//mAccessibilityNodeInfo.findAccessibilityNodeInfosByViewId("com.tencent.mm:id/eq");
+                if (info != null && info.getChildCount() > 1) {
+                    AccessibilityNodeInfo accessibilityNodeInfo = info.getChild(1);
                     accessibilityNodeInfo.performAction(AccessibilityNodeInfo.ACTION_CLICK);
-                    process ++;
-                }else{
-                    new Thread(new Runnable() {
-                        @Override
-                        public void run() {
-                            try {
-                                Thread.sleep(sleepTime);
-                            } catch (InterruptedException e) {
-                                e.printStackTrace();
-                            }
-                            startActivity(new Intent(getApplicationContext(), ShiftActivity.class));
-                            sleepTime += 100;
-                        }
-                    }).start();
+                    process++;
+                    oldTime = System.currentTimeMillis();
+                    break;
                 }
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            Thread.sleep(sleepTime);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                        startActivity(new Intent(getApplicationContext(), ShiftActivity.class));
+                        //sleepTime += 100;
+                    }
+                }).start();
                 break;
             case 4:
                 process = 0;
@@ -135,9 +148,7 @@ public class AccessibilityMonitorService extends AccessibilityService {
                     public void run() {
                         try {
                             Thread.sleep(10000);
-                            if(file != null && file.exists())
-                                file.delete();
-                            file = null;
+                            deleteFile();
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
@@ -145,6 +156,34 @@ public class AccessibilityMonitorService extends AccessibilityService {
                 }).start();
                 break;
         }
+    }
+
+    public void deleteFile(){
+        if (file != null)
+            FileUtils.deleteFile(this, file);
+        file = null;
+    }
+
+    private AccessibilityNodeInfo findNodeByClass(String className, AccessibilityNodeInfo root){
+        AccessibilityNodeInfo find = null;
+        if(root!=null && root.getChildCount()>0){
+            for(int i = 0; i<root.getChildCount(); i++){
+                AccessibilityNodeInfo child = root.getChild(i);
+                if(child == null)
+                    continue;
+                if(TextUtils.equals(className, child.getClassName())){
+                    find = child;
+                    break;
+                }else{
+                    child = findNodeByClass(className, child);
+                    if(child == null)
+                        continue;
+                    find = child;
+                    break;
+                }
+            }
+        }
+        return find;
     }
 
     @Override

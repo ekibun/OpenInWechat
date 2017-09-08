@@ -1,0 +1,30 @@
+<resources>
+    <string name="app_name">用微信打开</string>
+    <string name="service_access">用微信打开</string>
+
+    <string name="load_info">正在调起微信...</string>
+    <string name="acc_desc">用于微信自动点击图片扫码以实现自动打开链接</string>
+
+    <!--设置页-->
+    <string name="pref_cate_permit">权限</string>
+    <string name="pref_aces_permit">无障碍服务</string>
+    <string name="pref_save_permit">存储权限</string>
+    <string name="pref_default_permit">默认打开</string>
+    <string name="pref_default_permit_summary">设置为默认打开微信链接的程序</string>
+    <string name="pref_cate_other">杂项</string>
+    <string name="pref_hide_launcher">隐藏启动器图标</string>
+    <string name="pref_cate_about">关于</string>
+    <string name="pref_version_code">版本号</string>
+
+    <string name="pref_enable_permit">已启用</string>
+    <string name="pref_disable_permit">已禁用</string>
+
+    <!--关于页-->
+    <string name="about_dialog_title">关于</string>
+    <string name="about_dialog_message">
+        使用无障碍服务操作微信扫码以解决微信scheme无效的问题
+    </string>
+    <string name="about_dialog_support">打赏</string>
+    <string name="about_dialog_github">GitHub</string>
+    <string name="about_dialog_button">确定</string>
+</resources>

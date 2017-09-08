@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <PreferenceCategory android:title="@string/pref_cate_permit">
+        <Preference
+            android:key="aces_permit"
+            android:title="@string/pref_aces_permit" />
+        <Preference
+            android:key="save_permit"
+            android:title="@string/pref_save_permit" />
+        <Preference
+            android:key="default_permit"
+            android:title="@string/pref_default_permit"
+            android:summary = "@string/pref_default_permit_summary"/>
+    </PreferenceCategory>
+    <PreferenceCategory android:title="@string/pref_cate_other">
+        <SwitchPreference
+            android:key="hide_launcher"
+            android:title="@string/pref_hide_launcher" />
+    </PreferenceCategory>
+    <PreferenceCategory android:title="@string/pref_cate_about">
+        <Preference
+            android:key="version_code"
+            android:title="@string/pref_version_code" />
+    </PreferenceCategory>
+</PreferenceScreen>

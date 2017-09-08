@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.inklin.openinwechat">
+
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+
+    <application
+        android:allowBackup="true"
+        android:autoRemoveFromRecents="true"
+        android:excludeFromRecents="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme.Transparent">
+        <activity
+            android:name=".ShareActivity"
+            android:autoRemoveFromRecents="true"
+            android:excludeFromRecents="true"
+            android:exported="true"
+            android:icon="@drawable/ic_wechat">
+            <intent-filter>
+                <action android:name="android.intent.action.SEND" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+
+                <data android:mimeType="text/plain" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="wx.tenpay.com"
+                    android:scheme="http" />
+                <data
+                    android:host="wx.tenpay.com"
+                    android:scheme="https" />
+                <data
+                    android:host="weixin.qq.com"
+                    android:pathPrefix="/r/"
+                    android:scheme="http" />
+                <data
+                    android:host="weixin.qq.com"
+                    android:pathPrefix="/r/"
+                    android:scheme="https" />
+                <data android:scheme="weixin" />
+                <data android:scheme="wxp" />
+            </intent-filter>
+        </activity>
+
+        <service
+            android:name=".AccessibilityMonitorService"
+            android:label="@string/service_access"
+            android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE">
+            <intent-filter>
+                <action android:name="android.accessibilityservice.AccessibilityService" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.accessibilityservice"
+                android:resource="@xml/accessibility" />
+        </service>
+
+        <activity
+            android:name=".ShiftActivity"
+            android:autoRemoveFromRecents="true"
+            android:excludeFromRecents="true" />
+        <activity
+            android:name=".SplashActivity"
+            android:autoRemoveFromRecents="true"
+            android:excludeFromRecents="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".PreferencesActivity"
+            android:excludeFromRecents="true"
+            android:autoRemoveFromRecents="true"
+            android:theme="@style/AppTheme.Dialog">
+            <intent-filter>
+                <action android:name="android.intent.action.APPLICATION_PREFERENCES" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+    </application>
+
+</manifest>

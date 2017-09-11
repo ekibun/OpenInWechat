@@ -3,7 +3,6 @@
     package="com.inklin.openinwechat">
 
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS"/>
 
     <application
         android:allowBackup="true"
@@ -33,9 +32,6 @@
 
                 <data
                     android:host="wx.tenpay.com"
-                    android:scheme="http" />
-                <data
-                    android:host="wx.tenpay.com"
                     android:scheme="https" />
                 <data
                     android:host="weixin.qq.com"
@@ -43,10 +39,11 @@
                     android:scheme="http" />
                 <data
                     android:host="weixin.qq.com"
-                    android:pathPrefix="/r/"
-                    android:scheme="https" />
+                    android:pathPrefix="/q/"
+                    android:scheme="http" />
                 <data android:scheme="weixin" />
                 <data android:scheme="wxp" />
+                <data android:scheme="wxhb" />
             </intent-filter>
         </activity>
 

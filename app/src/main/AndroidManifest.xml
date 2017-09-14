@@ -76,12 +76,29 @@
         </activity>
         <activity
             android:name=".PreferencesActivity"
-            android:excludeFromRecents="true"
             android:autoRemoveFromRecents="true"
+            android:excludeFromRecents="true"
             android:theme="@style/AppTheme.Dialog">
             <intent-filter>
                 <action android:name="android.intent.action.APPLICATION_PREFERENCES" />
+
                 <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".AlipayActivity"
+            android:autoRemoveFromRecents="true"
+            android:excludeFromRecents="true"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="qr.alipay.com"
+                    android:scheme="https" />
             </intent-filter>
         </activity>
     </application>

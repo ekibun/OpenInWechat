@@ -19,7 +19,5 @@
         <item name="android:colorPrimary">@color/colorPrimary</item>
         <item name="android:colorPrimaryDark">@color/colorPrimary</item>
         <item name="android:colorAccent">@color/colorPrimary</item>
-
-        <item name="android:windowNoTitle">true</item>
     </style>
 </resources>

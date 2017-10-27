@@ -1,14 +1,21 @@
 package com.inklin.openinwechat;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.media.RingtoneManager;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.provider.Settings;
+import android.widget.Toast;
 
 import com.inklin.openinwechat.utils.PreferencesUtils;
 
+import java.io.File;
 import java.net.URISyntaxException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -19,6 +26,8 @@ public class ShareActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         //setContentView(R.layout.load_layout);
+
+
 
         Intent intent = getIntent();
         String action = intent.getAction();
@@ -76,27 +85,79 @@ public class ShareActivity extends Activity {
                     openInWechat(uri.toString());
             }
         }
-        this.finish();
+        if(!flag_request)
+            this.finish();
     }
 
     @Override
     public void onStop(){
         super.onStop();
-        this.finish();
+        if(!flag_request)
+            this.finish();
     }
 
-    private void openInWechat(final String url) {
-        if(PreferencesUtils.isAccessibilitySettingsOn(this) && PreferencesUtils.isStorageEnable(this)){
-            try {
-                Intent intent = new Intent(this, AccessibilityMonitorService.class);
-                intent.putExtra("processWechat", url);
-                startService(intent);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }else{
-            Intent intent = new Intent(this, PreferencesActivity.class);
-            startActivity(intent);
+    private static final int REQUEST_ACCESS_CODE = 0;
+    private static final int REQUEST_STORAGE_CODE = 1;
+    private boolean checkPermission(){
+        if(!PreferencesUtils.isAccessibilitySettingsOn(this)) {
+            flag_request = true;
+            startActivityForResult(new Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS), REQUEST_ACCESS_CODE);
+            return false;
         }
+        if(Build.VERSION.SDK_INT >= 23 && ! PreferencesUtils.isStorageEnable(this)) {
+            flag_request = true;
+            requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_STORAGE_CODE);
+            return false;
+        }
+        return true;
+    }
+    boolean flag_request = false;
+    String wechatUrl = "";
+    private void openInWechat(final String url) {
+        if(url == null || url.isEmpty())
+            return;
+        wechatUrl = url;
+        if (checkPermission()) {
+            openInWechat();
+        } else {
+            Toast.makeText(this, R.string.toast_no_permit, Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void openInWechat() {
+        try {
+            Intent intent = new Intent(this, AccessibilityMonitorService.class);
+            intent.putExtra("processWechat", wechatUrl);
+            startService(intent);
+            this.finish();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        flag_request = false;
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUEST_ACCESS_CODE && PreferencesUtils.isAccessibilitySettingsOn(this)) {
+            openInWechat(wechatUrl);
+        }
+        if(!flag_request)
+            this.finish();
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        flag_request = false;
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == REQUEST_STORAGE_CODE) {
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                //重新运行
+                openInWechat();
+            }else{
+                Toast.makeText(this, R.string.toast_no_permit, Toast.LENGTH_SHORT).show();
+            }
+        }
+        this.finish();
     }
 }

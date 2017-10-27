@@ -6,14 +6,18 @@
 
     <application
         android:allowBackup="true"
+        android:clearTaskOnLaunch="true"
         android:autoRemoveFromRecents="true"
         android:excludeFromRecents="true"
+        android:finishOnTaskLaunch="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme.Transparent">
         <activity
             android:name=".ShareActivity"
+            android:clearTaskOnLaunch="true"
+            android:finishOnTaskLaunch="true"
             android:autoRemoveFromRecents="true"
             android:excludeFromRecents="true"
             android:exported="true">
@@ -119,10 +123,14 @@
 
         <activity
             android:name=".ShiftActivity"
+            android:finishOnTaskLaunch="true"
+            android:clearTaskOnLaunch="true"
             android:autoRemoveFromRecents="true"
             android:excludeFromRecents="true" />
         <activity
             android:name=".SplashActivity"
+            android:clearTaskOnLaunch="true"
+            android:finishOnTaskLaunch="true"
             android:autoRemoveFromRecents="true"
             android:excludeFromRecents="true">
             <intent-filter>
@@ -133,6 +141,8 @@
         </activity>
         <activity
             android:name=".PreferencesActivity"
+            android:clearTaskOnLaunch="true"
+            android:finishOnTaskLaunch="true"
             android:autoRemoveFromRecents="true"
             android:excludeFromRecents="true"
             android:theme="@style/AppTheme.Dialog">

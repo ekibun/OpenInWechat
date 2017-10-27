@@ -2,13 +2,13 @@ apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion 25
-    buildToolsVersion "26.0.0"
+    buildToolsVersion "26.0.2"
     defaultConfig {
         applicationId "com.inklin.openinwechat"
         minSdkVersion 21
         targetSdkVersion 25
-        versionCode 11
-        versionName "0.2.0"
+        versionCode 12
+        versionName "0.2.1"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
